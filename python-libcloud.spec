@@ -5,8 +5,8 @@
 %global tarball_name apache-libcloud
 
 Name:           python-libcloud
-Version:        0.11.1
-Release:        3%{?dist}
+Version:        0.11.3
+Release:        4%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
@@ -47,6 +47,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Oct 10 2012 Daniel Bruno dbruno@fedoraproject.org - 0.11.3-4
+- Update to 0.11.3
+
 * Thu Aug 02 2012 Daniel Bruno dbruno@fedoraproject.org - 0.11.1-3
 - Updating to upstream release 0.11.1
 
