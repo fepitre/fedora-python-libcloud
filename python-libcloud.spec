@@ -16,7 +16,7 @@ Source0:        http://pypi.python.org/packages/source/a/apache-libcloud/%{tarba
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
-BuildRequires:  python-devel python-setuptools
+BuildRequires:  python2-devel python-setuptools
 
 %description
 libcloud is a client library for interacting with many of the popular cloud 
