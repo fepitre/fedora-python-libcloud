@@ -1,6 +1,11 @@
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%define pybasever 2.6
+%define __python_ver 26
+%define __python %{_bindir}/python%{?pybasever}
+
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 %global tarball_name apache-libcloud
+%global _module_name libcloud
 
 Name:           python-libcloud
 Version:        0.14.1
@@ -14,7 +19,9 @@ Source0:        http://pypi.python.org/packages/source/a/apache-libcloud/%{tarba
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
-BuildRequires:  python2-devel python-setuptools
+
+Requires:       python26
+BuildRequires:  python26 python26-distribute
 
 %description
 libcloud is a client library for interacting with many of the popular cloud 
@@ -26,6 +33,7 @@ products that work between any of the services that it supports.
 
 
 %build
+echo %{python_sitelib}
 %{__python} setup.py build
 
 
@@ -45,6 +53,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Mar 24 2014 Erik Johnson <erik@saltstack.com> - 0.14.1-1
+- Initial build of 0.14.1 for EL5
+
 * Mon Feb 10 2014 Daniel Bruno <dbruno@fedoraproject.org> - 0.14.1-1
 - Release 0.14.1 includes some bug-fixes, improvements and new features
 
