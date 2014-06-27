@@ -1,22 +1,37 @@
+%global __python26 /usr/bin/python2.6
 %if 0%{?fedora} < 13 || 0%{?rhel} < 6
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+%define python26_sitelib %(%{__python26} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")
+%global __os_install_post %{__python26_os_install_post}
+%else
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 %endif
 
 %global tarball_name apache-libcloud
 
 Name:           python-libcloud
-Version:        0.14.1
+Version:        0.15.0
 Release:        1%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
 License:        ASL 2.0
 URL:            http://libcloud.apache.org/
-Source0:        http://pypi.python.org/packages/source/a/apache-libcloud/%{tarball_name}-%{version}.tar.bz2
+Source0:        http://pypi.python.org/packages/source/a/apache-libcloud/%{tarball_name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
-BuildRequires:  python2-devel python-setuptools
+
+BuildRequires:  python-setuptools
+
+%if 0%{?fedora} < 13 || 0%{?rhel} < 6
+BuildRequires:  python26-devel
+%else
+BuildRequires:  python2-devel
+%endif
+
+%if 0%{?fedora} < 13 || 0%{?rhel} < 6
+Requires:	python26
+%endif
 
 %description
 libcloud is a client library for interacting with many of the popular cloud 
@@ -28,12 +43,20 @@ products that work between any of the services that it supports.
 
 
 %build
+%if 0%{?fedora} < 13 || 0%{?rhel} < 6
+%{__python26} setup.py build
+%else
 %{__python} setup.py build
+%endif
 
 
 %install
 rm -rf %{buildroot}
+%if 0%{?fedora} < 13 || 0%{?rhel} < 6
+%{__python26} setup.py install -O1 --skip-build --root %{buildroot}
+%else
 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
+%endif
 
  
 %clean
@@ -47,6 +70,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jun 27 2014 Daniel Bruno <dbruno@fedoraproject.org> - 0.15.0-1
+- First release in the 0.15 series which it brings many new features,
+  improvements and bug fixes
+
 * Mon Feb 10 2014 Daniel Bruno <dbruno@fedoraproject.org> - 0.14.1-1
 - Release 0.14.1 includes some bug-fixes, improvements and new features
 
