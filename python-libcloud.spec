@@ -32,6 +32,7 @@ products that work between any of the services that it supports.
 %{__python} setup.py build
 
 %install
+rm -rf %{buildroot}
 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
 
  
