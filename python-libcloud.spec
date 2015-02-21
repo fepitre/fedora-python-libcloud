@@ -1,9 +1,15 @@
+%global __python26 /usr/bin/python2.6
+%if 0%{?fedora} < 13 || 0%{?rhel} < 6
+%define python26_sitelib %(%{__python26} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")
+%global __os_install_post %{__python26_os_install_post}
+%else
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%endif
 
 %global tarball_name apache-libcloud
 
 Name:           python-libcloud
-Version:        0.16.0
+Version:        0.17.0
 Release:        1%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
@@ -17,7 +23,15 @@ BuildArch:      noarch
 
 BuildRequires:  python-setuptools
 
+%if 0%{?fedora} < 13 || 0%{?rhel} < 6
+BuildRequires:  python26-devel
+%else
 BuildRequires:  python2-devel
+%endif
+
+%if 0%{?fedora} < 13 || 0%{?rhel} < 6
+Requires:   python26
+%endif
 
 %description
 libcloud is a client library for interacting with many of the popular cloud 
@@ -29,11 +43,20 @@ products that work between any of the services that it supports.
 
 
 %build
+%if 0%{?fedora} < 13 || 0%{?rhel} < 6
+%{__python26} setup.py build
+%else
 %{__python} setup.py build
+%endif
+
 
 %install
 rm -rf %{buildroot}
+%if 0%{?fedora} < 13 || 0%{?rhel} < 6
+%{__python26} setup.py install -O1 --skip-build --root %{buildroot}
+%else
 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
+%endif
 
  
 %clean
@@ -47,11 +70,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Feb 21 2015 Daniel Bruno <dbruno@fedoraproject.org> - 0.17.0-1
+- Libcloud 0.17.0 release it brings many new features, improvements and
+  bug-fixes.
+
 * Thu Nov 13 2014 Daniel Bruno <dbruno@fedoraproject.org> - 0.16.0-1
 - Libcloud 0.16.0 release with many new features, improvements and bug-fixes.
-
-* Mon Jul 21 2014 Daniel Bruno <dbruno@fedoraproject.org - 0.15.1-2
-- Libcloud 0.15.1 bug-fix release
 
 * Fri Jun 27 2014 Daniel Bruno <dbruno@fedoraproject.org> - 0.15.0-1
 - First release in the 0.15 series which it brings many new features,
