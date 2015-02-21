@@ -1,10 +1,5 @@
 %global __python26 /usr/bin/python2.6
-%if 0%{?fedora} < 13 || 0%{?rhel} < 6
-%define python26_sitelib %(%{__python26} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")
-%global __os_install_post %{__python26_os_install_post}
-%else
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-%endif
 
 %global tarball_name apache-libcloud
 
@@ -22,16 +17,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 BuildRequires:  python-setuptools
-
-%if 0%{?fedora} < 13 || 0%{?rhel} < 6
-BuildRequires:  python26-devel
-%else
-BuildRequires:  python2-devel
-%endif
-
-%if 0%{?fedora} < 13 || 0%{?rhel} < 6
-Requires:   python26
-%endif
+BuildRequires:  python-devel
 
 %description
 libcloud is a client library for interacting with many of the popular cloud 
@@ -41,23 +27,12 @@ products that work between any of the services that it supports.
 %prep
 %setup -qn %{tarball_name}-%{version}
 
-
 %build
-%if 0%{?fedora} < 13 || 0%{?rhel} < 6
-%{__python26} setup.py build
-%else
 %{__python} setup.py build
-%endif
-
 
 %install
 rm -rf %{buildroot}
-%if 0%{?fedora} < 13 || 0%{?rhel} < 6
-%{__python26} setup.py install -O1 --skip-build --root %{buildroot}
-%else
 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
-%endif
-
  
 %clean
 rm -rf %{buildroot}
