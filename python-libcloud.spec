@@ -3,8 +3,8 @@
 %global tarball_name apache-libcloud
 
 Name:           python-libcloud
-Version:        0.20.1
-Release:        2%{?dist}
+Version:        1.1.0
+Release:        1%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
@@ -27,7 +27,6 @@ products that work between any of the services that it supports.
 %prep
 %setup -qn %{tarball_name}-%{version}
 
-
 %build
 %{__python} setup.py build
 
@@ -35,20 +34,17 @@ products that work between any of the services that it supports.
 rm -rf %{buildroot}
 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
 
- 
 %clean
 rm -rf %{buildroot}
-
 
 %files
 %defattr(-,root,root,-)
 %doc LICENSE README.rst
 %{python_sitelib}/*
 
-
 %changelog
-* Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0.20.1-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+* Tue Jul 12 2016 Daniel Bruno <dbruno@fedoraproject.org> - 1.1.0-1
+- Python Libcloud 1.1.0 release
 
 * Sun Jan 24 2016 Daniel Bruno <dbruno@fedoraprojec.org> - 0.20.1-1
 - This is a bug-fix release of the 0.20 series.
