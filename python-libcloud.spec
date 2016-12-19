@@ -12,7 +12,7 @@ any of the services that it supports.
 
 Name:           python-libcloud
 Version:        1.3.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
@@ -77,6 +77,9 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %{python3_sitelib}/%{eggname}-*.egg-info/
 
 %changelog
+* Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 1.3.0-3
+- Rebuild for Python 3.6
+
 * Wed Nov 16 2016 Dominika Krejci <dkrejci@redhat.com> - 1.3.0-2
 - Add python3 subpackage
 - Include the upstream demos
