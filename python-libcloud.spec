@@ -11,8 +11,8 @@ any of the services that it supports.
 %global _docdir_fmt %{name}
 
 Name:           python-libcloud
-Version:        1.3.0
-Release:        4%{?dist}
+Version:        2.0.0rc2
+Release:        1%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
@@ -77,6 +77,9 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %{python3_sitelib}/%{eggname}-*.egg-info/
 
 %changelog
+* Wed Apr 19 2017 Daniel Bruno <dbruno@fedoraproject.org> - 2.0.0-1
+- Apache Libcloud version 2.0.0rc2 upgrade
+
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
