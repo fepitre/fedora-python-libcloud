@@ -1,48 +1,96 @@
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-
 %global tarball_name apache-libcloud
+%global srcname libcloud
+%global eggname apache_libcloud
+%global _description \
+libcloud is a client library for interacting with many of \
+the popular cloud server providers.  It was created to make \
+it easy for developers to build products that work between \
+any of the services that it supports.
+
+# Don't duplicate the same documentation
+%global _docdir_fmt %{name}
 
 Name:           python-libcloud
-Version:        1.3.0
+Version:        2.0.0rc2
 Release:        1%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
 License:        ASL 2.0
 URL:            http://libcloud.apache.org/
-Source0:        http://pypi.python.org/packages/source/a/apache-libcloud/%{tarball_name}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Source0:        https://files.pythonhosted.org/packages/source/a/%{tarball_name}/%{tarball_name}-%{version}.tar.gz
 
 BuildArch:      noarch
 
-BuildRequires:  python-setuptools
+%description %{_description}
 
+%package -n python2-%{srcname}
+Summary:        %{summary}
 BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
+%{?python_provide:%python_provide python2-%{srcname}}
 
-%description
-libcloud is a client library for interacting with many of the popular cloud 
-server providers.  It was created to make it easy for developers to build 
-products that work between any of the services that it supports.
+%description -n python2-%{srcname} %{_description}
+Python 2 version.
+
+%package -n python3-%{srcname}
+Summary:        %{summary}
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+%{?python_provide:%python_provide python3-%{srcname}}
+
+%description -n python3-%{srcname} %{_description}
+Python 3 version.
 
 %prep
-%setup -qn %{tarball_name}-%{version}
+%autosetup -n %{tarball_name}-%{version}
+
+# Delete shebang lines in the demos
+sed -i '1d' demos/gce_demo.py demos/compute_demo.py
 
 %build
-%{__python} setup.py build
+%py2_build
+%py3_build
+
+# Fix permissions for demos
+chmod -x demos/gce_demo.py demos/compute_demo.py
 
 %install
-rm -rf %{buildroot}
-%{__python} setup.py install -O1 --skip-build --root %{buildroot}
+%py2_install
+%py3_install
 
-%clean
-rm -rf %{buildroot}
+# Don't package the test suite. We dont run it anyway
+# because it requires some valid cloud credentials
+rm -r $RPM_BUILD_ROOT%{python2_sitelib}/%{srcname}/test
+rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 
-%files
-%defattr(-,root,root,-)
-%doc LICENSE README.rst
-%{python_sitelib}/*
+%files -n python2-%{srcname}
+%doc README.rst demos/
+%license LICENSE
+%{python2_sitelib}/%{srcname}/
+%{python2_sitelib}/%{eggname}-*.egg-info/
+
+%files -n python3-%{srcname}
+%doc README.rst demos/
+%license LICENSE
+%{python3_sitelib}/%{srcname}/
+%{python3_sitelib}/%{eggname}-*.egg-info/
 
 %changelog
+* Wed Apr 19 2017 Daniel Bruno <dbruno@fedoraproject.org> - 2.0.0-1
+- Apache Libcloud version 2.0.0rc2 upgrade
+
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 1.3.0-3
+- Rebuild for Python 3.6
+
+* Wed Nov 16 2016 Dominika Krejci <dkrejci@redhat.com> - 1.3.0-2
+- Add python3 subpackage
+- Include the upstream demos
+- Don't package the test suite
+
 * Mon Oct 24 2016 Daniel Bruno <dbruno@fedoraproject.org> - 1.3.0-1
 - Python Libcloud 1.3.0 release
 
