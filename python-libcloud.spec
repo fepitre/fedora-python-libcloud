@@ -24,14 +24,9 @@ BuildArch:      noarch
 
 %description %{_description}
 
-%package -n python2-%{srcname}
-Summary:        %{summary}
-BuildRequires:  python2-devel
-BuildRequires:  python2-setuptools
-%{?python_provide:%python_provide python2-%{srcname}}
-
-%description -n python2-%{srcname} %{_description}
-Python 2 version.
+BuildRequires:  python-devel
+BuildRequires:  python-setuptools
+%{?python_provide:%python_provide python-%{srcname}}
 
 %prep
 %autosetup -n %{tarball_name}-%{version}
@@ -52,7 +47,7 @@ chmod -x demos/gce_demo.py demos/compute_demo.py
 # because it requires some valid cloud credentials
 rm -r $RPM_BUILD_ROOT%{python2_sitelib}/%{srcname}/test
 
-%files -n python2-%{srcname}
+%files -n python-%{srcname}
 %doc README.rst demos/
 %license LICENSE
 %{python2_sitelib}/%{srcname}/
