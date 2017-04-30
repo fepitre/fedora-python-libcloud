@@ -33,15 +33,6 @@ BuildRequires:  python2-setuptools
 %description -n python2-%{srcname} %{_description}
 Python 2 version.
 
-%package -n python3-%{srcname}
-Summary:        %{summary}
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-%{?python_provide:%python_provide python3-%{srcname}}
-
-%description -n python3-%{srcname} %{_description}
-Python 3 version.
-
 %prep
 %autosetup -n %{tarball_name}-%{version}
 
@@ -50,19 +41,16 @@ sed -i '1d' demos/gce_demo.py demos/compute_demo.py
 
 %build
 %py2_build
-%py3_build
 
 # Fix permissions for demos
 chmod -x demos/gce_demo.py demos/compute_demo.py
 
 %install
 %py2_install
-%py3_install
 
 # Don't package the test suite. We dont run it anyway
 # because it requires some valid cloud credentials
 rm -r $RPM_BUILD_ROOT%{python2_sitelib}/%{srcname}/test
-rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 
 %files -n python2-%{srcname}
 %doc README.rst demos/
@@ -70,11 +58,8 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %{python2_sitelib}/%{srcname}/
 %{python2_sitelib}/%{eggname}-*.egg-info/
 
-%files -n python3-%{srcname}
 %doc README.rst demos/
 %license LICENSE
-%{python3_sitelib}/%{srcname}/
-%{python3_sitelib}/%{eggname}-*.egg-info/
 
 %changelog
 * Wed Apr 19 2017 Daniel Bruno <dbruno@fedoraproject.org> - 2.0.0-1
