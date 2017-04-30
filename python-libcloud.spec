@@ -1,65 +1,119 @@
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-
 %global tarball_name apache-libcloud
+%global srcname libcloud
+%global eggname apache_libcloud
+%global _description \
+libcloud is a client library for interacting with many of \
+the popular cloud server providers.  It was created to make \
+it easy for developers to build products that work between \
+any of the services that it supports.
+
+# Don't duplicate the same documentation
+%global _docdir_fmt %{name}
 
 Name:           python-libcloud
-Version:        1.1.0
+Version:        2.0.0rc2
 Release:        1%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
 License:        ASL 2.0
 URL:            http://libcloud.apache.org/
-Source0:        http://pypi.python.org/packages/source/a/apache-libcloud/%{tarball_name}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Source0:        https://files.pythonhosted.org/packages/source/a/%{tarball_name}/%{tarball_name}-%{version}.tar.gz
 
 BuildArch:      noarch
 
-BuildRequires:  python-setuptools
+%description %{_description}
 
-BuildRequires:  python-devel
+%package -n python2-%{srcname}
+Summary:        %{summary}
+BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
+%{?python_provide:%python_provide python2-%{srcname}}
 
+%description -n python2-%{srcname} %{_description}
+Python 2 version.
 
-%description
-libcloud is a client library for interacting with many of the popular cloud 
-server providers.  It was created to make it easy for developers to build 
-products that work between any of the services that it supports.
+%package -n python3-%{srcname}
+Summary:        %{summary}
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+%{?python_provide:%python_provide python3-%{srcname}}
+
+%description -n python3-%{srcname} %{_description}
+Python 3 version.
 
 %prep
-%setup -qn %{tarball_name}-%{version}
+%autosetup -n %{tarball_name}-%{version}
 
-%{__python} setup.py build
+# Delete shebang lines in the demos
+sed -i '1d' demos/gce_demo.py demos/compute_demo.py
+
+%build
+%py2_build
+%py3_build
+
+# Fix permissions for demos
+chmod -x demos/gce_demo.py demos/compute_demo.py
 
 %install
-%{__python} setup.py install -O1 --skip-build --root %{buildroot}
- 
-%clean
-rm -rf %{buildroot}
+%py2_install
+%py3_install
 
-%files
-%defattr(-,root,root,-)
-%doc LICENSE README.rst
-%{python_sitelib}/*
+# Don't package the test suite. We dont run it anyway
+# because it requires some valid cloud credentials
+rm -r $RPM_BUILD_ROOT%{python2_sitelib}/%{srcname}/test
+rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
+
+%files -n python2-%{srcname}
+%doc README.rst demos/
+%license LICENSE
+%{python2_sitelib}/%{srcname}/
+%{python2_sitelib}/%{eggname}-*.egg-info/
+
+%files -n python3-%{srcname}
+%doc README.rst demos/
+%license LICENSE
+%{python3_sitelib}/%{srcname}/
+%{python3_sitelib}/%{eggname}-*.egg-info/
 
 %changelog
-* Thu Jul 21 2016 Daniel Bruno <dbruno@fedoraproject.org> - 1.1.0-1
-- Python Libcloud 1.1.0 release
+* Wed Apr 19 2017 Daniel Bruno <dbruno@fedoraproject.org> - 2.0.0-1
+- Apache Libcloud version 2.0.0rc2 upgrade
 
-* Sun Jan 24 2016 Daniel Bruno <dbruno@fedoraprojec.org> - 0.20.1-2
-- EL6 dependencies fixed.
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 1.3.0-3
+- Rebuild for Python 3.6
+
+* Wed Nov 16 2016 Dominika Krejci <dkrejci@redhat.com> - 1.3.0-2
+- Add python3 subpackage
+- Include the upstream demos
+- Don't package the test suite
+
+* Mon Oct 24 2016 Daniel Bruno <dbruno@fedoraproject.org> - 1.3.0-1
+- Python Libcloud 1.3.0 release
+
+* Tue Jul 12 2016 Daniel Bruno <dbruno@fedoraproject.org> - 1.1.0-1
+- Python Libcloud 1.1.0 release
 
 * Sun Jan 24 2016 Daniel Bruno <dbruno@fedoraprojec.org> - 0.20.1-1
 - This is a bug-fix release of the 0.20 series.
 
-* Mon Aug 17 2015 Daniel Bruno <dbruno@fedoraproject.org> - 0.18.0-1
-- Libcloud 0.18.0 release with new features, improvements and bug-fixes.
+* Thu Jan 07 2016 Daniel Bruno dbruno@fedoraproject.org - 0.20.0-1
+- Release 0.20.0 with new features and improvements
 
-* Sat Feb 21 2015 Daniel Bruno <dbruno@fedoraproject.org> - 0.17.0-1
-- Libcloud 0.17.0 release it brings many new features, improvements and
-  bug-fixes.
+* Mon Aug 10 2015 Daniel Bruno <dbruno@fedoraproject.org> - 0.18.0-1
+- Apache Libcloud 0.18.0 release with bug fixes and new features
 
-* Thu Nov 13 2014 Daniel Bruno <dbruno@fedoraproject.org> - 0.16.0-1
-- Libcloud 0.16.0 release with many new features, improvements and bug-fixes.
+* Fri Feb 20 2015 Daniel Bruno <dbruno@fedoraproject.org> - 0.17.0-1
+- Apache Libcloud 0.17.0 release
+
+* Wed Nov 12 2014 Daniel Bruno <dbruno@fedoraproject.org> - 0.16.0-1
+- First release in the 0.16 series
+
+* Mon Jul 21 2014 Daniel Bruno <dbruno@fedoraproject.org - 0.15.1-2
+- Libcloud 0.15.1 bug-fix release
 
 * Fri Jun 27 2014 Daniel Bruno <dbruno@fedoraproject.org> - 0.15.0-1
 - First release in the 0.15 series which it brings many new features,
@@ -112,3 +166,4 @@ rm -rf %{buildroot}
 
 * Tue Nov 22 2011 Daniel Bruno dbruno@fedoraproject.org - 0.6.2-2
 - First build package build
+
