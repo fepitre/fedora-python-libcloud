@@ -11,22 +11,49 @@ any of the services that it supports.
 %global _docdir_fmt %{name}
 
 Name:           python-libcloud
-Version:        2.0.0rc2
+Version:        2.0.0
 Release:        1%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
 License:        ASL 2.0
 URL:            http://libcloud.apache.org/
-Source0:        https://files.pythonhosted.org/packages/source/a/%{tarball_name}/%{tarball_name}-%{version}.tar.gz
+Source0:        http://www-us.apache.org/dist/libcloud/%{tarball_name}/%{tarball_name}-%{version}.tar.gz
 
 BuildArch:      noarch
 
 %description %{_description}
 
+%if 0%{?fedora}
+%package -n python2-%{srcname}
+Summary:        %{summary}
+BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
+%{?python_provide:%python_provide python2-%{srcname}}
+
+%description -n python2-%{srcname} %{_description}
+Python 2 version.
+
+%package -n python3-%{srcname}
+Summary:        %{summary}
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+%{?python_provide:%python_provide python3-%{srcname}}
+
+%description -n python3-%{srcname} %{_description}
+Python 3 version.
+
+%else
+# EPEL packages
+%package -n python-%{srcname}
+Summary:        %{summary}
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools
 %{?python_provide:%python_provide python-%{srcname}}
+
+%description -n python-%{srcname} %{_description}
+EPEL version
+%endif
 
 %prep
 %autosetup -n %{tarball_name}-%{version}
@@ -35,30 +62,57 @@ BuildRequires:  python-setuptools
 sed -i '1d' demos/gce_demo.py demos/compute_demo.py
 
 %build
+%if 0%{?fedora}
 %py2_build
+%py3_build
+%else
+%py2_build
+%endif
 
 # Fix permissions for demos
 chmod -x demos/gce_demo.py demos/compute_demo.py
 
 %install
+%if 0%{?fedora}
 %py2_install
+%py3_install
+%else
+%py2_install
+%endif
 
 # Don't package the test suite. We dont run it anyway
 # because it requires some valid cloud credentials
+%if 0%{?fedora}
 rm -r $RPM_BUILD_ROOT%{python2_sitelib}/%{srcname}/test
+rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
+%else
+rm -r $RPM_BUILD_ROOT%{python_sitelib}/%{srcname}/test
+%endif
 
-%files -n python-%{srcname}
+%if 0%{?fedora}
+%files -n python2-%{srcname}
 %doc README.rst demos/
 %license LICENSE
 %{python2_sitelib}/%{srcname}/
 %{python2_sitelib}/%{eggname}-*.egg-info/
 
+%files -n python3-%{srcname}
 %doc README.rst demos/
 %license LICENSE
+%{python3_sitelib}/%{srcname}/
+%{python3_sitelib}/%{eggname}-*.egg-info/
+
+%else
+%files -n python-%{srcname}
+%doc README.rst demos/
+%license LICENSE
+%{python_sitelib}/%{srcname}/
+%{python_sitelib}/%{eggname}-*.egg-info/
+%endif
 
 %changelog
 * Wed Apr 19 2017 Daniel Bruno <dbruno@fedoraproject.org> - 2.0.0-1
-- Apache Libcloud version 2.0.0rc2 upgrade
+- Apache Libcloud version 2.0.0 upgrade
 
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
