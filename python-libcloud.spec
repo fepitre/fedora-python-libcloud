@@ -16,7 +16,7 @@ any of the services that it supports.
 %endif
 Name:           python-libcloud
 Version:        2.2.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
@@ -93,6 +93,9 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %endif
 
 %changelog
+* Thu Nov 23 2017 Sayan Chowdhury <sayanchowdhury@fedoraproject.org> - 2.2.1-3
+- Fix the gitignore file for the package
+
 * Wed Nov 22 2017 Sayan Chowdhury <sayanchowdhury@fedoraproject.org> - 2.2.1-2
 - Add package python-pytest-runner as BuildRequires
 
