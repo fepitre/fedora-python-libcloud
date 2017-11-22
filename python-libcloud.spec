@@ -10,9 +10,13 @@ any of the services that it supports.
 # Don't duplicate the same documentation
 %global _docdir_fmt %{name}
 
+%if 0%{?fedora}
+%global with_python3 0
+
+%endif
 Name:           python-libcloud
 Version:        2.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
@@ -28,19 +32,23 @@ BuildArch:      noarch
 Summary:        %{summary}
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
+BuildRequires:  python2-pytest-runner
 %{?python_provide:%python_provide python2-%{srcname}}
 
 %description -n python2-%{srcname} %{_description}
 Python 2 version.
 
+%if 0%{?with_python3}
 %package -n python3-%{srcname}
 Summary:        %{summary}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
+BuildRequires:  python3-pytest-runner
 %{?python_provide:%python_provide python3-%{srcname}}
 
 %description -n python3-%{srcname} %{_description}
 Python 3 version.
+%endif
 
 %prep
 %autosetup -n %{tarball_name}-%{version}
@@ -50,19 +58,25 @@ sed -i '1d' demos/gce_demo.py demos/compute_demo.py
 
 %build
 %py2_build
+%if 0%{?with_python3}
 %py3_build
+%endif
 
 # Fix permissions for demos
 chmod -x demos/gce_demo.py demos/compute_demo.py
 
 %install
 %py2_install
+%if 0%{?with_python3}
 %py3_install
+%endif
 
 # Don't package the test suite. We dont run it anyway
 # because it requires some valid cloud credentials
 rm -r $RPM_BUILD_ROOT%{python2_sitelib}/%{srcname}/test
+%if 0%{?with_python3}
 rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
+%endif
 
 %files -n python2-%{srcname}
 %doc README.rst demos/
@@ -70,13 +84,18 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %{python2_sitelib}/%{srcname}/
 %{python2_sitelib}/%{eggname}-*.egg-info/
 
+%if 0%{?with_python3}
 %files -n python3-%{srcname}
 %doc README.rst demos/
 %license LICENSE
 %{python3_sitelib}/%{srcname}/
 %{python3_sitelib}/%{eggname}-*.egg-info/
+%endif
 
 %changelog
+* Wed Nov 22 2017 Sayan Chowdhury <sayanchowdhury@fedoraproject.org> - 2.2.1-2
+- Add package python-pytest-runner as BuildRequires
+
 * Wed Oct 25 2017 Sayan Chowdhury <sayanchowdhury@fedoraproject.org> - 2.2.1-1
 - Apache Libcloud version 2.2.1 upgrade
 
