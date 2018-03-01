@@ -10,15 +10,9 @@ any of the services that it supports.
 # Don't duplicate the same documentation
 %global _docdir_fmt %{name}
 
-%if 0%{?fedora}
-# Disabling python 3 as Ansible is not yet ported to Python3.
-# Package does not support python3.
-%global with_python3 0
-%endif
-
 Name:           python-libcloud
 Version:        2.2.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
@@ -40,17 +34,15 @@ BuildRequires:  python2-pytest-runner
 %description -n python2-%{srcname} %{_description}
 Python 2 version.
 
-%if 0%{?with_python3}
-%package -n python3-%{srcname}
+%package -n python%{python3_pkgversion}-%{srcname}
 Summary:        %{summary}
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-pytest-runner
-%{?python_provide:%python_provide python3-%{srcname}}
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-pytest-runner
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
 
-%description -n python3-%{srcname} %{_description}
+%description -n python%{python3_pkgversion}-%{srcname} %{_description}
 Python 3 version.
-%endif
 
 %prep
 %autosetup -n %{tarball_name}-%{version}
@@ -60,25 +52,19 @@ sed -i '1d' demos/gce_demo.py demos/compute_demo.py
 
 %build
 %py2_build
-%if 0%{?with_python3}
 %py3_build
-%endif
 
 # Fix permissions for demos
 chmod -x demos/gce_demo.py demos/compute_demo.py
 
 %install
 %py2_install
-%if 0%{?with_python3}
 %py3_install
-%endif
 
 # Don't package the test suite. We dont run it anyway
 # because it requires some valid cloud credentials
 rm -r $RPM_BUILD_ROOT%{python2_sitelib}/%{srcname}/test
-%if 0%{?with_python3}
 rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
-%endif
 
 %files -n python2-%{srcname}
 %doc README.rst demos/
@@ -86,15 +72,16 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %{python2_sitelib}/%{srcname}/
 %{python2_sitelib}/%{eggname}-*.egg-info/
 
-%if 0%{?with_python3}
-%files -n python3-%{srcname}
+%files -n python%{python3_pkgversion}-%{srcname}
 %doc README.rst demos/
 %license LICENSE
 %{python3_sitelib}/%{srcname}/
 %{python3_sitelib}/%{eggname}-*.egg-info/
-%endif
 
 %changelog
+* Mon Feb 26 2018 Sayan Chowdhury <sayanchowdhury@fedoraproject.org> 2.2.1-5
+- Rebuilt the package to enable the python3-libcloud package
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.2.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
