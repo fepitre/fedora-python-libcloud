@@ -12,7 +12,7 @@ any of the services that it supports.
 
 Name:           python-libcloud
 Version:        2.2.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
@@ -79,6 +79,9 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %{python3_sitelib}/%{eggname}-*.egg-info/
 
 %changelog
+* Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.2.1-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 2.2.1-6
 - Rebuilt for Python 3.7
 
