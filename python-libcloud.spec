@@ -12,7 +12,7 @@ any of the services that it supports.
 
 Name:           python-libcloud
 Version:        2.2.1
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
@@ -41,11 +41,13 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-pytest-runner
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
 
+Patch0: 000-async.patch
+
 %description -n python%{python3_pkgversion}-%{srcname} %{_description}
 Python 3 version.
 
 %prep
-%autosetup -n %{tarball_name}-%{version}
+%autosetup -p1 -n %{tarball_name}-%{version}
 
 # Delete shebang lines in the demos
 sed -i '1d' demos/gce_demo.py demos/compute_demo.py
@@ -79,6 +81,9 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %{python3_sitelib}/%{eggname}-*.egg-info/
 
 %changelog
+* Mon Jul 16 2018 Marcel Plch <mplch@redhat.com> - 2.2.1-8
+- Patch for Python 3.7
+
 * Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.2.1-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
