@@ -15,7 +15,6 @@ Version:        2.2.1
 Release:        8%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
-Group:          Development/Languages
 License:        ASL 2.0
 URL:            http://libcloud.apache.org/
 Source0:        https://files.pythonhosted.org/packages/source/a/%{tarball_name}/%{tarball_name}-%{version}.tar.gz
