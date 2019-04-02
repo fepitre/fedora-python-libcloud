@@ -12,7 +12,7 @@ any of the services that it supports.
 
 Name:           python-libcloud
 Version:        2.2.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 Group:          Development/Languages
@@ -79,6 +79,9 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %{python3_sitelib}/%{eggname}-*.egg-info/
 
 %changelog
+* Tue Apr 02 2019 Troy Dawson <tdawson@redhat.com> - 2.2.1-6
+- Rebuilt to change main python from 3.4 to 3.6
+
 * Mon Feb 26 2018 Sayan Chowdhury <sayanchowdhury@fedoraproject.org> 2.2.1-5
 - Rebuilt the package to enable the python3-libcloud package
 
