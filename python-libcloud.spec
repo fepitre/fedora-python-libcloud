@@ -12,7 +12,7 @@ any of the services that it supports.
 
 Name:           python-libcloud
 Version:        2.2.1
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 License:        ASL 2.0
@@ -22,16 +22,6 @@ Source0:        https://files.pythonhosted.org/packages/source/a/%{tarball_name}
 BuildArch:      noarch
 
 %description %{_description}
-
-%package -n python2-%{srcname}
-Summary:        %{summary}
-BuildRequires:  python2-devel
-BuildRequires:  python2-setuptools
-BuildRequires:  python2-pytest-runner
-%{?python_provide:%python_provide python2-%{srcname}}
-
-%description -n python2-%{srcname} %{_description}
-Python 2 version.
 
 %package -n python%{python3_pkgversion}-%{srcname}
 Summary:        %{summary}
@@ -52,26 +42,17 @@ Python 3 version.
 sed -i '1d' demos/gce_demo.py demos/compute_demo.py
 
 %build
-%py2_build
 %py3_build
 
 # Fix permissions for demos
 chmod -x demos/gce_demo.py demos/compute_demo.py
 
 %install
-%py2_install
 %py3_install
 
 # Don't package the test suite. We dont run it anyway
 # because it requires some valid cloud credentials
-rm -r $RPM_BUILD_ROOT%{python2_sitelib}/%{srcname}/test
 rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
-
-%files -n python2-%{srcname}
-%doc README.rst demos/
-%license LICENSE
-%{python2_sitelib}/%{srcname}/
-%{python2_sitelib}/%{eggname}-*.egg-info/
 
 %files -n python%{python3_pkgversion}-%{srcname}
 %doc README.rst demos/
@@ -80,6 +61,10 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %{python3_sitelib}/%{eggname}-*.egg-info/
 
 %changelog
+* Sun Sep 08 2019 Miro Hrončok <mhroncok@redhat.com> - 2.2.1-12
+- Subpackage python2-libcloud has been removed
+  See https://fedoraproject.org/wiki/Changes/Mass_Python_2_Package_Removal
+
 * Mon Aug 19 2019 Miro Hrončok <mhroncok@redhat.com> - 2.2.1-11
 - Rebuilt for Python 3.8
 
