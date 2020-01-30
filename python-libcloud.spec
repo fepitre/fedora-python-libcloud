@@ -12,7 +12,7 @@ any of the services that it supports.
 
 Name:           python-libcloud
 Version:        2.2.1
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        A Python library to address multiple cloud provider APIs
 
 License:        ASL 2.0
@@ -61,6 +61,9 @@ rm -r $RPM_BUILD_ROOT%{python3_sitelib}/%{srcname}/test
 %{python3_sitelib}/%{eggname}-*.egg-info/
 
 %changelog
+* Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.2.1-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Sun Sep 08 2019 Miro Hrončok <mhroncok@redhat.com> - 2.2.1-12
 - Subpackage python2-libcloud has been removed
   See https://fedoraproject.org/wiki/Changes/Mass_Python_2_Package_Removal
